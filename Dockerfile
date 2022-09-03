@@ -1,8 +1,9 @@
 # syntax=docker/dockerfile:1
-FROM python:3.10-alpine
+FROM python:3
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 WORKDIR /code
-COPY TestProject/requirements.txt /code/
+COPY requirements.txt /code/
 RUN pip install -r requirements.txt
 COPY . /code/
+RUN python TestProject/manage.py migrate

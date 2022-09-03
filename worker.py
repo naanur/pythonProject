@@ -45,9 +45,10 @@ def worker():
             # insert new rows from the spreadsheet
             # convert usd to rubles
             cost_in_rub = round(float(row[1]) * float(USD_RATE), 2)
+            delivery_time = datetime.strptime(row[3], '%d.%m.%Y')
             # p = Product(_id=row[0], order_number=row[1], cost=row[2], delivery_time=row[3], cost_in_rub=float(row[4]))
             query = f"""INSERT INTO "public".app_product (id, order_number, cost, delivery_time, cost_in_rub) 
-            VALUES ({row[0]}, {row[1]}, '{float(row[2])}', '{row[3]}', '{cost_in_rub}');"""
+            VALUES ({row[0]}, {row[1]}, '{float(row[2])}', '{delivery_time}', '{cost_in_rub}');"""
             # print(query)
             cursor.execute(query)
 
