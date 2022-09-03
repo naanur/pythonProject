@@ -9,6 +9,7 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DATESTYLE=iso, dmy
   web:
     build: .
     command: python TestProject/manage.py runserver 0.0.0.0:8000
@@ -20,6 +21,7 @@ services:
       - POSTGRES_NAME=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DATESTYLE=iso, dmy
+      - TELEGRAM_BOT_TOKEN=5767367345:AAG1kOEyuhj0DXTQE_S1wJMKLDCYrDv_CiI
+      - TELEGRAM_CHAT_ID=5188478208
     depends_on:
       - db
