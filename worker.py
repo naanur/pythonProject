@@ -20,21 +20,23 @@ connection = psycopg2.connect(host=DATABASES['default']['HOST'], user=DATABASES[
 # b. Разработка функционала проверки соблюдения «срока поставки» из таблицы.
 # В случае, если срок прошел, скрипт отправляет уведомление в Telegram.
 def check_delivery_time():
+    print(f'{datetime.now()}: Проверка срока поставки')
     with connection.cursor() as cursor:
         cursor.execute("""SELECT p.order_number, o.message_sent 
             FROM app_product p 
             LEFT JOIN app_overdue o ON o.order_number = p.order_number
             WHERE p.delivery_time < now() AND o.message_sent = FALSE;""")
         rows = cursor.fetchall()
+        # print(rows)
         if len(rows) > 0:
             print(f'{datetime.now()}: {len(rows)} товаров просрочены')
             order_numbers = [str(row[0]) for row in rows]
             text = f'Следующие заказы {", ".join(order_numbers)} просрочены'
             for row in rows:
-                print(f'{datetime.now()}: {row[0]} просрочен')
+                # print(f'{datetime.now()}: {row[0]} просрочен')
                 # send message to telegram about overdue of order
                 # update overdue field to prevent sending message again
-                cursor.execute(f"UPDATE app_overdue SET message_sent = true WHERE order_number = {row[0]}")
+                cursor.execute(f"UPDATE app_overdue SET message_sent = TRUE WHERE order_number = {row[0]}")
             connection.commit()
             print(token, chat_id, text)
             url = f'https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={text}'
@@ -71,13 +73,13 @@ def worker():
         order_numbers = [str(row[0]) for row in cursor.fetchall()]
         data_order_numbers = [str(row[1]) for row in data]
         # compare two lists and get order numbers that are not in the spreadsheet
-        order_numbers_to_delete = list(set(order_numbers) - set(data_order_numbers))
-        # print(order_numbers_to_delete)
+        order_numbers_to_delete = list(set(data_order_numbers) - set(order_numbers))
+        print(order_numbers_to_delete)
         if len(order_numbers_to_delete) == 0:
             print(f'{datetime.now()}: Нет новых заказов')
         else:
 
-            cursor.execute("DELETE FROM app_product")
+            cursor.execute("DELETE FROM app_product; DELETE FROM app_overdue;")
 
             for row in data:
                 # insert new rows from the spreadsheet
@@ -86,13 +88,14 @@ def worker():
                 delivery_time = datetime.strptime(row[3], '%d.%m.%Y')
 
                 query = f"""INSERT INTO "public".app_product (id, order_number, cost, delivery_time, cost_in_rub) 
-                VALUES ({row[0]}, {row[1]}, '{float(row[2])}', '{delivery_time}', '{cost_in_rub}');"""
+                VALUES ({row[0]}, {row[1]}, '{float(row[2])}', '{delivery_time}', '{cost_in_rub}');
+                INSERT INTO "public".app_overdue (order_number, message_sent) VALUES ({row[1]}, FALSE);"""
                 # print(query)
                 cursor.execute(query)
 
             connection.commit()
             print(f'{datetime.now()}: Обновлено успешно {len(data)} строк. Текущий курс доллара: {USD_RATE} рублей')
-            check_delivery_time()
+        check_delivery_time()
 
 
 if __name__ == '__main__':
