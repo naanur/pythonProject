@@ -26,6 +26,7 @@ services:
       - TELEGRAM_CHAT_ID=5188478208
     depends_on:
       - db
+
   frontend:
     build: ./TestProject/frontend
     volumes:
