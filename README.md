@@ -7,7 +7,7 @@
 
 1. Run docker compose
 ```
-docker compose up
+docker compose up -d
 ```
 2. Look for the container name and ID
 ```
