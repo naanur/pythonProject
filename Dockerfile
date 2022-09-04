@@ -6,7 +6,7 @@ WORKDIR /code
 ADD requirements.txt startup.sh /code/
 
 RUN python3 -m pip install --upgrade pip
-RUN python3 -m pip install -r requirements.txt
+RUN ["/usr/bin/pip", "install", "-r", "/requirements.txt"]
 RUN apk update && apk add bash
 
 ADD ./TestProject /code/TestProject
