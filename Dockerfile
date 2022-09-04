@@ -5,8 +5,8 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /code
 ADD requirements.txt startup.sh /code/
 
-RUN python -m pip install --upgrade pip
-RUN python -m pip install -r requirements.txt
+RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install -r requirements.txt
 RUN apk update && apk add bash
 
 ADD ./TestProject /code/TestProject
