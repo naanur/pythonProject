@@ -9,12 +9,16 @@
 ```
 docker compose up
 ```
-2. Look for the container name
+2. Look for the container name and ID
 ```
 docker ps
 ```
+3. copy the service_account.json to the container
+```
+docker cp .\service_account.json <CONTAINER ID>:/service_account.json
+```
 
-3. run background worker to collect data from google sheet 
+4. run background worker to collect data from google sheet 
 ```
 docker exec -it pythonproject-web-1 python worker.py
 ```
