@@ -22,8 +22,8 @@ services:
       - POSTGRES_NAME=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - TELEGRAM_BOT_TOKEN=5767367345:AAG1kOEyuhj0DXTQE_S1wJMKLDCYrDv_CiI
-      - TELEGRAM_CHAT_ID=5188478208
+      - TELEGRAM_BOT_TOKEN=<> # Telegram bot token
+      - TELEGRAM_CHAT_ID=<> # Telegram chat id
     depends_on:
       - db
 
